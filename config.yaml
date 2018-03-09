@@ -1,0 +1,23 @@
+- name: Software config for AEM VM
+  hosts: localhost
+  sudo: yes
+  tasks:
+    - name: Install JDK 8
+      apt:
+        name: openjdk-8-jdk
+        state: present
+    - name: Install Maven
+      apt:
+        name: maven
+        state: present
+    #- name: Take backup of Maven settings.xml
+    #  copy:
+    #    src: /etc/maven/settings.xml
+    #    dest: /etc/maven/settings_old.xml
+    - name: Copy new Maven settings.xml
+      copy:
+        src: /vagrant/shared/maven/settings.xml
+        dest: /etc/maven/
+        backup: yes
+    - name: Setup Maven archetype
+      shell: mvn --batch-mode archetype:generate -DarchetypeGroupId=com.day.jcr.vault -DarchetypeArtifactId=multimodule-content-package-archetype -DarchetypeVersion=1.0.2 -DgroupId=mygroup-id -Dversion=1.0-SNAPSHOT -DcqVersion="5.6.1" -DartifactId=test-aem-multi -Dpackage=com.telstra.tcom.multi -DappsFolderName=telstra -DartifactName="TEST AEM Multi Module" -DpackageGroup="Telstra"
